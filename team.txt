@@ -1,4 +1,4 @@
 # EG: 
-# cwpark2, 26984415
-# hawons, 16242530
-# yeonjh, 96085064
+cwpark2, 26984415
+hawons, 16242530
+yeonjh, 96085064
