@@ -17,25 +17,51 @@ if __name__ == '__main__':
         rootdir = 'testwebpages'
         result = {}
         y = []
-        z = []
+        
         for subdir, dirs, files in os.walk(rootdir):
+                
                 for file in files:
-                        path = os.path.join(subdir, file)
-                        filename = path.split('\\')[-1]
-                        file = readfile.read_file(path)
-                        soup = bs4.BeautifulSoup(file, 'html.parser')
+                        try:
+                                path = os.path.join(subdir, file)
+                                filename = path.split('\\')[-1]
+                                file = readfile.read_file(path)
+                                soup = bs4.BeautifulSoup(file, 'html.parser')
 
-                       
-                        a_txt = soup.find_all('p')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in a_txt])
+                               
+                                a_txt = soup.find_all('p')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in a_txt])
 
-                        b_txt = soup.find_all('td')
-                        z.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-                        #print(y)
-                        #print(z)
-        c = y + z
-        for i in c:
-                new_str = re.sub('[^a-zA-Z0-9]', ' ',i.lower())
+                                b_txt = soup.find_all('a')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('b')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('h1')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('h2')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('h3')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('body')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('title')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('strong')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                #print(y)
+                                #print(z)
+                        except:
+                                continue
+
+        for i in y:
+                new_str = re.sub('[^a-zA-Z]', ' ',i.lower())
                 new_str = new_str.split()
                 for x in new_str:
                         if x in result:
