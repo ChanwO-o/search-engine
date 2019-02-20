@@ -18,5 +18,8 @@ def insertNewWordToDatabase(word, index):
 	collection.insert_one(toadd)
 	
 def insertExistingWordToDatabase(word, index):
-	indexListOfTheWord = collection.find(word)
-	print(indexListOfTheWord)
+	global collection
+	for x in list(collection.find({"newword"})):
+		print(x)
+	# indexListOfTheWord = cursor[word]
+	# print(indexListOfTheWord)

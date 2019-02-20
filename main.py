@@ -16,6 +16,8 @@ def printList(node):
 if __name__ == '__main__':
         database.createDatabase()
         database.insertNewWordToDatabase("newword", 7)
+        database.insertNewWordToDatabase("anothernewword", 1)
+        database.insertExistingWordToDatabase("anothernewword", 2)
         
         # rootdir = 'testwebpages'
         # result = {}
