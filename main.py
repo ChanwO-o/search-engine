@@ -15,7 +15,8 @@ def printList(node):
 
 if __name__ == '__main__':
         database.createDatabase()
-        database.insertToDatabase( { "countryman" : [3, 3, 3] } )
+        database.insertNewWordToDatabase("newword", 7)
+        
         # rootdir = 'testwebpages'
         # result = {}
         # y = []
@@ -68,9 +69,7 @@ if __name__ == '__main__':
                 # for x in new_str:
                         # if x in result:
                                 # result[x] += 1
+								# database.insertToDatabase(x)
                         # else:
                                 # result[x] = 1
         # print(result)
-
-        
-                        

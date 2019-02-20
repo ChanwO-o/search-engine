@@ -11,3 +11,12 @@ def createDatabase():
 def insertToDatabase(value):
 	global collection
 	x = collection.insert_one(value)
+	
+def insertNewWordToDatabase(word, index):
+	global collection
+	toadd = {word : [index]}
+	collection.insert_one(toadd)
+	
+def insertExistingWordToDatabase(word, index):
+	indexListOfTheWord = collection.find(word)
+	print(indexListOfTheWord)
