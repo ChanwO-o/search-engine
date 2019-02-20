@@ -15,6 +15,7 @@ def printList(node):
 
 if __name__ == '__main__':
         database.createDatabase()
+        database.insertToDatabase( { "countryman" : [3, 3, 3] } )
         # rootdir = 'testwebpages'
         # result = {}
         # y = []

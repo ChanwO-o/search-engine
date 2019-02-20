@@ -1,10 +1,13 @@
 from pymongo import MongoClient
 
+client, database, collection = 0, 0, 0
 
 def createDatabase():
+	global client, database, collection
 	client = MongoClient()
 	database = client["worddatabase"]
 	collection = database["wordcollection"]
 	
-	mydict = { "Roman": [1, 2, 3, 4] }
-	x = collection.insert_one(mydict)
+def insertToDatabase(value):
+	global collection
+	x = collection.insert_one(value)
