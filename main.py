@@ -17,7 +17,7 @@ def tokenize(y) -> list:
 
 if __name__ == '__main__':
         
-        rootdir = 'webpages\WEBPAGES_RAW'
+        rootdir = 'testwebpages'
         result = dict()
         num_doc = 0
         num_uniq = 0
@@ -27,52 +27,66 @@ if __name__ == '__main__':
 
         for k, v in j_dict.items():
                 if int(k[0]) < 1:
+            
                         num_doc += 1
                         y = []
                         
                         fol, fil = k.split('/')
-
-                        file = open(rootdir + "\\" + fol + "\\" + fil, 'r', encoding = 'utf-8')
-                        soup = bs4.BeautifulSoup(file, 'html.parser')
-                    
-                        a_txt = soup.find_all('p')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in a_txt])
-
-                        b_txt = soup.find_all('a')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-
-                        b_txt = soup.find_all('b')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-
-                        b_txt = soup.find_all('h1')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-
-                        b_txt = soup.find_all('h2')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-
-                        b_txt = soup.find_all('h3')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-
-                        b_txt = soup.find_all('body')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
                         
-                        b_txt = soup.find_all('title')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-                        
-                        b_txt = soup.find_all('strong')
-                        y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
-                        
-                        l = tokenize(y)
+                        try:
+                                file = open(rootdir + "\\" + fol + "\\" + fil, 'r', encoding = 'utf-8')
 
-                        for i in l:
-                                if i not in result:
-                                        result[i] = []
-                                if (fol, fil) not in result[i]:
-                                    result[i].append((fol,fil))
+                                soup = bs4.BeautifulSoup(file, 'lxml')
+                                soup.prettify()
+                                a_txt = soup.find_all('p')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in a_txt])
+
+                                b_txt = soup.find_all('a')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('b')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('h1')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('h2')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+
+                                b_txt = soup.find_all('h3')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+
+                                b_txt = soup.find_all('body')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+                                
+                                b_txt = soup.find_all('title')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+                                
+                                b_txt = soup.find_all('strong')
+                                y.extend([re.sub(r'<.+?>',r'',str(a)) for a in b_txt])
+                                
+                                
+                        except:
+                                with open(rootdir + "\\" + fol + "\\" + fil, 'r', encoding = 'utf-8') as d:
+                                        file_str = d.read().replace('\n', '')
+                                #print(file_str)
+                                y.append(file_str)
+                                
+                        finally:
+                                l = tokenize(y)
+                                print(str(fol)+'/'+ str(fil))
+
+                                for i in l:
+                                        if i not in result:
+                                                result[i] = []
+                                        if (fol, fil) not in result[i]:
+                                            result[i].append((fol,fil))
                 else:
                     break
-   
+                
 
+                            
         final = open("final.txt", "w")
         final.write(str(result))
         final.close()
@@ -81,11 +95,10 @@ if __name__ == '__main__':
         num_uniq = len(result)
         print(num_uniq)
         print(os.path.getsize("final.txt"))
-        
-        info_list = result["irvine"]
-        print("URLs for word: irvine")
+
+    
+        info_list = result["mondego"]
+        print("URLs for word: mondego")
         print(len(info_list))
         for i in info_list:
             print(j_dict[str(i[0]) + '/' + str(i[1])])
-        
-       
