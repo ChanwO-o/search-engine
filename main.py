@@ -2,7 +2,7 @@ import requests
 import sys
 import os
 import json
-import readfile
+import result_generate
 import bs4
 import re
 
@@ -89,9 +89,7 @@ if __name__ == '__main__':
                 
 
                             
-        final = open("final.txt", "w")
-        final.write(str(result))
-        final.close()
+        result_generate.write_index_to_file(result)
         
         print(num_doc)
         num_uniq = len(result)

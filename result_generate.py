@@ -8,6 +8,12 @@ def read_index_from_file() -> dict:
     file.close()
     return index
 
+	
+def write_index_to_file(result):
+    final = open("final.txt", "w")
+    final.write(str(result))
+    final.close()
+    
     '''
     info_list = result["informatics"]
     print("URLs for word: informatics")
@@ -31,7 +37,3 @@ def read_index_from_file() -> dict:
 
     # for i in info_list:
         # print(j_dict[str(i[0]) + '/' + str(i[1])])
-    
-
-if __name__ == '__main__':
-    print(read_index_from_file())
