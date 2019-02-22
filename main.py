@@ -31,7 +31,6 @@ def create_index() -> (dict, int):
             j_dict = json.load(f)
 
     for k, v in j_dict.items():
-
             num_doc += 1
             y = []
             
@@ -88,6 +87,7 @@ def create_index() -> (dict, int):
                                     result[i] = []
                             if (fol, fil, freq) not in result[i]:
                                 result[i].append((fol,fil, freq))
+  
             
     return (result, num_doc)
 
@@ -103,12 +103,15 @@ if __name__ == '__main__':
         else:
             print('Creating index...')
             index, num_doc = create_index()
+            num_uniq = len(index)
             fileIO.write_index_to_file(index)
-            fileIO.write_num_doc_to_file(num_doc)
+            size = os.path.getsize("final.txt")
+            fileIO.write_num_to_file(num_doc)
+            fileIO.write_result_to_file(num_uniq, size)
         
         
         print('Number of documents:', num_doc)
-        num_uniq = len(index)
+        
         print('Number of uniques:', num_uniq)
         print('Size of index on file:', os.path.getsize("final.txt"), 'bytes')
 

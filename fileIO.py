@@ -15,6 +15,12 @@ def read_num_doc_from_file() -> dict:
     file.close()
     return num_doc
 
+def write_result_to_file(num_uniq, size):
+    nd = open("results.txt", "w")
+    nd.write('Number of uniques: ' + str(num_uniq) + '\n')
+    nd.write('Size of index on file: ' + str(size) + 'bytes')
+    nd.close()
+
 	
 def write_index_to_file(result):
     final = open("final.txt", "w")
@@ -22,7 +28,7 @@ def write_index_to_file(result):
     final.close()
 	
 	
-def write_num_doc_to_file(num_doc):
+def write_num_to_file(num_doc):
     nd = open("num_doc.txt", "w")
     nd.write(str(num_doc))
     nd.close()
