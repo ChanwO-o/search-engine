@@ -14,8 +14,13 @@ def tokenize(y) -> list:
         l = p.findall(text.lower()) #make a list of words that fit pattern
         token.extend(l)
     return token
+	
+def search(index, searchterm) -> list:
+    searchresult = index[searchterm]
+    print("Number of URLs for '", searchterm, "':", len(searchresult))
+    return searchresult
 
-def create_index() -> dict:
+def create_index() -> (dict, int):
 	rootdir = 'webpages\\WEBPAGES_RAW'
 	result = dict()
 	num_doc = 0
@@ -88,17 +93,21 @@ def create_index() -> dict:
 
 	
 if __name__ == '__main__':
+        num_doc = 0
         index, num_doc = create_index()
         fileIO.write_index_to_file(index)
+		
+        index = fileIO.read_index_from_file()
         
         print('Number of documents:', num_doc)
         num_uniq = len(index)
         print('Number of uniques:', num_uniq)
         print('Size of index on file:', os.path.getsize("final.txt"), 'bytes')
 
+        print(search(index, 'slide'))
     
-        info_list = index["mondego"]
-        print("URLs for word: mondego")
-        print(len(info_list))
-        for i in info_list:
-            print(j_dict[str(i[0]) + '/' + str(i[1])])
+        # info_list = index["mondego"]
+        # print("URLs for word: mondego")
+        # print(len(info_list))
+        # for i in info_list:
+            # print(j_dict[str(i[0]) + '/' + str(i[1])])
