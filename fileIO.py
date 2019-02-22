@@ -13,6 +13,10 @@ def write_index_to_file(result):
     final = open("final.txt", "w")
     final.write(str(result))
     final.close()
+	
+	
+def index_file_exists():
+    return os.path.isfile('final.txt')
     
     '''
     info_list = result["informatics"]
