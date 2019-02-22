@@ -101,11 +101,12 @@ if __name__ == '__main__':
         if fileIO.index_file_exists():
             print('Reading index from file...')
             index = fileIO.read_index_from_file()
-            num_doc = 0
+            num_doc = fileIO.read_num_doc_from_file()
         else:
             print('Creating index...')
             index, num_doc = create_index()
             fileIO.write_index_to_file(index)
+            fileIO.write_num_doc_to_file(num_doc)
         
         
         print('Number of documents:', num_doc)

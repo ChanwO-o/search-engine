@@ -7,12 +7,25 @@ def read_index_from_file() -> dict:
     index = eval(file.read())
     file.close()
     return index
+	
+	
+def read_num_doc_from_file() -> dict:
+    file = open('num_doc.txt', 'r')
+    num_doc = int(file.read())
+    file.close()
+    return num_doc
 
 	
 def write_index_to_file(result):
     final = open("final.txt", "w")
     final.write(str(result))
     final.close()
+	
+	
+def write_num_doc_to_file(num_doc):
+    nd = open("num_doc.txt", "w")
+    nd.write(str(num_doc))
+    nd.close()
 	
 	
 def index_file_exists():
