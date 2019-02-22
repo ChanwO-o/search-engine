@@ -78,10 +78,12 @@ if __name__ == '__main__':
                                 print(str(fol)+'/'+ str(fil))
 
                                 for i in l:
+                                        freq = l.count(i)
+
                                         if i not in result:
                                                 result[i] = []
-                                        if (fol, fil) not in result[i]:
-                                            result[i].append((fol,fil))
+                                        if (fol, fil, freq) not in result[i]:
+                                            result[i].append((fol,fil, freq))
                 else:
                     break
                 
