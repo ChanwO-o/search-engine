@@ -9,7 +9,7 @@ from multiprocessing import Pool
 from collections import defaultdict
 
 #rootdir = 'webpages'
-rootdir = 'testwebpages'
+rootdir = 'webpages\\WEBPAGES_RAW'
 
 def tokenize(f):
     #pattern to ensure that word is only alphanumeric
@@ -53,31 +53,33 @@ def create_index() -> (dict, int):
 
     for k, v in j_dict.items():
         token = []
+        totaldocumentwords = 0
         freq_ = defaultdict()
         if int(k[0]) < 1:
-            num_doc += 1
-            y = []
-            
-            fol, fil = k.split('/')
-            
-            try:
-                    file = open(rootdir + '\\' + fol + "\\" + fil, 'r', encoding = 'utf-8')
-                    token , freq_ = tokenize(file)
-                    
-            except:
-                    continue
-                    
-            finally:
-                    
-                    print(str(fol)+'/'+ str(fil))
+        	num_doc += 1
+        	y = []
+        	
+        	fol, fil = k.split('/')
+        	
+        	try:
+        			file = open(rootdir + '\\' + fol + "\\" + fil, 'r', encoding = 'utf-8')
+        			token , freq_ = tokenize(file)
+        			totaldocumentwords += len(token)
+        	except:
+        			continue
+					
+        	finally:
+        			print('number of words in doc:', totaldocumentwords)
+        			print(str(fol)+'/'+ str(fil))
 
-                    for i in token:
-                            freq = freq_[i]
+        			for i in token:
+        					freq = freq_[i]
+        					tfidf = freq / totaldocumentwords
 
-                            if i not in result:
-                                    result[i] = []
-                            if (fol, fil, freq) not in result[i]:
-                                result[i].append((fol,fil, freq))
+        					if i not in result:
+        							result[i] = []
+        					if (fol, fil, freq, tfidf) not in result[i]:
+        						result[i].append((fol,fil, freq, tfidf))
         else:
                break;
             
