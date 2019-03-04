@@ -3,9 +3,10 @@ import json
 
 
 def read_index_from_file() -> dict:
-    file = open('final.txt', 'r')
-    index = eval(file.read())
-    file.close()
+    with open('final.json', 'r') as f:
+        index = json.load(f)
+    #index = eval(file.read())
+    #file.close()
     return index
 	
 	
@@ -23,9 +24,10 @@ def write_result_to_file(num_uniq, size):
 
 	
 def write_index_to_file(result):
-    final = open("final.txt", "w")
-    final.write(str(result))
-    final.close()
+    with open("final.json", "w") as f:
+        json.dump(result, f)
+    #final.write(str(result))
+    #final.close()
 	
 	
 def write_num_to_file(num_doc):
@@ -35,7 +37,7 @@ def write_num_to_file(num_doc):
 	
 	
 def index_file_exists():
-    return os.path.isfile('final.txt')
+    return os.path.isfile('final.json')
     
     '''
     info_list = result["informatics"]
