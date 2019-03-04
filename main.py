@@ -8,6 +8,7 @@ import re
 import math
 from multiprocessing import Pool
 from collections import defaultdict
+import operator
 
 #rootdir = 'webpages'
 rootdir = 'webpages\\WEBPAGES_RAW'
@@ -39,8 +40,22 @@ def tokenize(f):
 	
 def search(index, searchterm) -> list:
 	searchresult = index[searchterm]
+	sortresult = dict()
+	
+	for k, v in searchresult.items():
+		#print(v[1])
+		if v[1] != '.': # catch error when float value is saved as '.'
+			tf = float(v[1].strip())
+			idf = float(searchresult['idf'].strip())
+			tfidf = tf * idf
+			v[1] = str(tfidf) # string-ify tfidf float and store back to list
+		
+	#print(searchresult)
+	for k, v in sorted(searchresult.items(), key = lambda x : x[1][1], reverse = True): # sort dict by tf-idf from greatest to least
+		sortresult[k] = v
 	print("Number of URLs for '", searchterm, "':", len(searchresult))
-	return searchresult
+	#print(sortresult)
+	return sortresult
 
 	
 def create_index() -> (dict, int):
@@ -77,7 +92,7 @@ def create_index() -> (dict, int):
 								if token not in result:
 										result[token] = dict()
 								if k not in result[token]:	 # if document is not included in term's subdictionary
-										result[token][k] = (freq, tf)   # store freq and tf values
+										result[token][k] = [freq, str(tf)]  # store freq and tf values
 		
 			
 			
@@ -114,7 +129,7 @@ if __name__ == '__main__':
 			#print('Calculated idf as:', idf)
 			
 			# store idf value as first key in term's subdictionary, under the key 'idf'
-			index[k]['idf'] = idf
+			index[k]['idf'] = str(idf)
 		
 		print('Number of documents:', num_doc)
 		
@@ -128,8 +143,8 @@ if __name__ == '__main__':
 		searchresult = search(index, 'mondego')
 		mondego = open('mondego.txt', 'w')
 		for i in searchresult:
-			count += 1
-			if (count < 21):
+			count += 1 # return top 20 links
+			if count < 21 and i != 'idf': # skip key 'idf' cuz that's a float
 				
 				mondego.write(j_dict[i])
 				print(j_dict[i])
@@ -140,7 +155,7 @@ if __name__ == '__main__':
 		in4 = open('informatics.txt', 'w')
 		for i in searchresult:
 			count += 1
-			if (count < 21):
+			if (count < 21)and i != 'idf':
 				in4.write(j_dict[i])
 				print(j_dict[i])
 		in4.close()
@@ -150,7 +165,7 @@ if __name__ == '__main__':
 		irvine = open('irvine.txt', 'w')
 		for i in searchresult:
 			count += 1
-			if (count < 21):
+			if (count < 21)and i != 'idf':
 				irvine.write(j_dict[i])
 				print(j_dict[i])
 		irvine.close()
