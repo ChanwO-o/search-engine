@@ -5,6 +5,7 @@ import json
 import fileIO
 import bs4
 import re
+import math
 from multiprocessing import Pool
 from collections import defaultdict
 
@@ -55,51 +56,46 @@ def create_index() -> (dict, int):
 		tokens = []
 		totaldocumentwords = 0
 		freq_ = defaultdict()
-		# if int(k[0]) < 1:
-		num_doc += 1
-		y = []
-		fol, fil = k.split('/')
-		# print(1)
-		
-		try:
-			file = open(rootdir + '\\' + fol + "\\" + fil, 'r', encoding = 'utf-8')
-			tokens , freq_ = tokenize(file)
-			totaldocumentwords += len(tokens)
-			# print(2)
-		except:
-			continue
+		if int(k[0]) < 1:
+			num_doc += 1
+			y = []
+			fol, fil = k.split('/')
 			
-		finally:
-			print('number of words in doc:', totaldocumentwords)
-			print(str(fol)+'/'+ str(fil))
+			try:
+				file = open(rootdir + '\\' + fol + "\\" + fil, 'r', encoding = 'utf-8')
+				tokens , freq_ = tokenize(file)
+				totaldocumentwords += len(tokens)
+			except:
+				continue
+				
+			finally:
+				print('number of words in doc:', totaldocumentwords)
+				print(fol + '/' + fil)
 
-			for token in tokens:
-				freq = freq_[token]
-				tfidf = freq / totaldocumentwords
-				if token not in result:
-					result[token] = dict()
-					# print(3, end='')
-				if (fol, fil) not in result[token]:
-					# print(4, end='')
-					result[token][(fol,fil)] = (freq, tfidf)	#.append((fol,fil, freq, tfidf))
-			# print(5)
-		# else:
-			   # break;
+				for token in tokens:
+					freq = freq_[token]
+					tf = freq / totaldocumentwords
+					if token not in result:
+						result[token] = dict()
+					if (fol, fil) not in result[token]:		# if document is not included in term's subdictionary
+						result[token][(fol,fil)] = (freq, tf)	# store freq and tf values
+		else:
+			break;
 			
 			
 	return (result, num_doc)
 
 	
 if __name__ == '__main__':
-		index = None
-		num_doc = None
+		index = None # the inverted index dictionary
+		num_doc = None # number of documents
 		
-		if fileIO.index_file_exists():
+		if fileIO.index_file_exists():	# read prebuilt index from final.txt
 			print('Reading index from file...')
 			index = fileIO.read_index_from_file()
 			num_doc = fileIO.read_num_doc_from_file()
 			num_uniq = len(index)
-		else:
+		else:	# create a new index structure from scratch (takes approx. 20 minutes)
 			print('Creating index...')
 			index, num_doc = create_index()
 			num_uniq = len(index)
@@ -108,6 +104,15 @@ if __name__ == '__main__':
 			fileIO.write_num_to_file(num_doc)
 			fileIO.write_result_to_file(num_uniq, size)
 		
+		# calculate tf-idf values for each term in completed index (and store them in each subdictionary)
+		for k,v in index.items(): # k: term	v: term's subdictionary
+			idf = 0
+			if len(index[k]) != 0: # avoid divide by 0 error
+				idf += math.log(num_doc / len(index[k]))
+			print('Calculated idf as:', idf)
+			
+			# store idf value as first key in term's subdictionary, under the key 'idf'
+			index['idf'] = idf
 		
 		print('Number of documents:', num_doc)
 		
