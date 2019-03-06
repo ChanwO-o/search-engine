@@ -64,7 +64,6 @@ if __name__ == '__main__':
 			print('Creating index...')
 			index, num_doc = search.create_index()
 			num_uniq = len(index)
-			fileIO.write_index_to_file(index)
 			size = os.path.getsize("final.json")
 			fileIO.write_num_to_file(num_doc)
 			fileIO.write_result_to_file(num_uniq, size)
@@ -81,16 +80,17 @@ if __name__ == '__main__':
 			
 				# store idf value as first key in term's subdictionary, under the key 'idf'
 				index[k]['idf'] = str(idf)
+			fileIO.write_index_to_file(index)
 		
 		print('Number of documents:', num_doc)
 		print('Number of uniques:', num_uniq)
 		print('Size of index on file:', os.path.getsize("final.json"), 'bytes')
 
-		with open(rootdir + '\\'+ 'bookkeeping.json', 'r') as f:
+		with open(rootdir + '\\'+ 'bookkeeping.json', 'r') as f: # load dictionary to allow user searching
 			j_dict = json.load(f)
 
 		# start GUI
-		gui()
+		#gui()
 
 		
 '''
