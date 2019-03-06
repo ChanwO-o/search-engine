@@ -102,9 +102,6 @@ if __name__ == '__main__':
 			print('Creating index...')
 			index, num_doc = search.create_index()
 			num_uniq = len(index)
-			size = os.path.getsize("final.json")
-			fileIO.write_num_to_file(num_doc)
-			fileIO.write_result_to_file(num_uniq, size)
 		
 			# calculate tf-idf values for each term in completed index (and store them in each subdictionary)
 			# ONLY CALCULATE IDF VALUES RIGHT AFTER INDEX CREATION; reading from final.json may already have idf values
@@ -119,6 +116,10 @@ if __name__ == '__main__':
 				# store idf value as first key in term's subdictionary, under the key 'idf'
 				index[k]['idf'] = str(idf)
 			fileIO.write_index_to_file(index)
+
+			size = os.path.getsize("final.json")
+			fileIO.write_num_to_file(num_doc)
+			fileIO.write_result_to_file(num_uniq, size)
 		
 		print('Number of documents:', num_doc)
 		print('Number of uniques:', num_uniq)
