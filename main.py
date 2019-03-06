@@ -11,13 +11,15 @@ from collections import defaultdict
 import operator
 import search
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QLineEdit
+from functools import partial
 
 #rootdir = 'webpages'
 rootdir = 'webpages\\WEBPAGES_RAW'
 searchresults = None
 
-def gui():
+def gui(index, j_dict):
 	app = QApplication([])
+	global searchresults
 	
 	# gui widgets
 	window = QWidget()
@@ -25,8 +27,7 @@ def gui():
 	textbox.move(20, 20)
 	textbox.resize(280,40)
 	searchbutton = QPushButton('Search')
-	searchbutton.clicked.connect(onClickSearch)
-	global searchresults
+	searchbutton.clicked.connect(partial(onClickSearch, index, textbox, j_dict))
 	searchresults = QLabel('')
 	
 	# define layout
@@ -41,13 +42,50 @@ def gui():
 	window.show()
 	app.exec_()
 	
-def onClickSearch():
+
+def getSearchResults(index, user_input, j_dict):
+	count = 0
+	searchresult = []
+	displayedresults = []
+	try:
+		usr_sp = user_input.split(' ')
+		if(len(usr_sp) > 1):
+			num = 0
+			for i in usr_sp:
+				print(i)
+				if (num == 0):
+					searchresult = search.search(index, i)
+				else:
+					searchresult = list(set(searchresult) & set(search.search(index, i)))
+				num = num + 1
+		else:
+			searchresult = search.search(index, user_input)
+		print("Number of URLs for '", user_input, "':", len(searchresult))
+		for i in searchresult:
+			count += 1 # return top 20 links
+			if count < 21 and i != 'idf': # skip key 'idf' cuz that's a float
+				displayedresults.append(j_dict[i])
+		if len(displayedresults) == 0:
+			displayedresults.append('No results!')
+	except:
+		displayedresults.append("Cannot find word in indexer. Please try again")
+	return displayedresults
+	
+def onClickSearch(index, textbox, j_dict):
 	global searchresults
 	
 	# get search results
-	search.search()
+	finalsearchresults = getSearchResults(index, textbox.text(), j_dict) #search.search(index, textbox.text())
 	# set searchresults lable as results
-	searchresults.setText('search button clicked')
+	searchresults.setText(formatFinalResults(finalsearchresults))
+	
+def formatFinalResults(finalsearchresults):
+	result = ''
+	count = 1
+	for sr in finalsearchresults:
+		result += str(count) + ': ' + str(sr) + '\n'
+		count += 1
+	return result
 	
 if __name__ == '__main__':
 		index = None # the inverted index dictionary
@@ -90,33 +128,4 @@ if __name__ == '__main__':
 			j_dict = json.load(f)
 
 		# start GUI
-		#gui()
-
-		
-'''
-user_input = input('Enter a word (q to quit):')
-while(user_input != 'q'):
-	count = 0
-	searchresult = []
-	try:
-		usr_sp = user_input.split(' ')
-		if(len(usr_sp) > 1):
-			num = 0
-			for i in usr_sp:
-				print(i)
-				if (num == 0):
-					searchresult = search.search(index, i)
-				else:
-					searchresult = list(set(searchresult) & set(search.search(index, i)))
-				num = num + 1
-		else:
-			searchresult = search.search(index, user_input)
-		print("Number of URLs for '", user_input, "':", len(searchresult))
-		for i in searchresult:
-			count += 1 # return top 20 links
-			if count < 21 and i != 'idf': # skip key 'idf' cuz that's a float
-				print(j_dict[i])
-	except:
-		print("Cannot find word in indexer. Please try again")
-	user_input = input('Enter a word (q to quit):')
-'''
+		gui(index, j_dict)
