@@ -1,3 +1,14 @@
+import requests
+import sys
+import os
+import json
+import fileIO
+import bs4
+import re
+import math
+from multiprocessing import Pool
+from collections import defaultdict
+import operator
 rootdir = 'webpages\\WEBPAGES_RAW'
 
 def tokenize(f):
