@@ -38,7 +38,7 @@ def gui(index, j_dict):
 	
 	# set layout to window
 	window.setLayout(layout)
-	window.setGeometry(500, 500, 500, 500)
+	window.setGeometry(500, 500, 1000, 1000)
 	window.show()
 	app.exec_()
 	
@@ -56,7 +56,7 @@ def getSearchResults(index, user_input, j_dict):
 				if (num == 0):
 					searchresult = search.search(index, i)
 				else:
-					searchresult = list(set(searchresult) & set(search.search(index, i)))
+					searchresult = list(set(searchresult) | set(search.search(index, i)))
 				num = num + 1
 		else:
 			searchresult = search.search(index, user_input)
