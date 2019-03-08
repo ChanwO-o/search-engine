@@ -44,15 +44,15 @@ def getSearchResults(index, user_input, j_dict):
 				print(token)
 				if len(token) >= 15:	# filter if token is ridiculously long word
 					continue
-				if token in search.STOPLIST:	# filter if token is a very common word
+				if token in STOPLIST:	# filter if token is a very common word
 					continue
 				if (num == 0):
-					searchresults = search.search(index, token)
+					searchresults = search(index, token)
 				else:
-					searchresults = list(set(searchresults) | set(search.search(index, token)))
+					searchresults = list(set(searchresults) | set(search(index, token)))
 				num = num + 1
 		else:
-			searchresults = search.search(index, user_input)
+			searchresults = search(index, user_input)
 		print("Number of URLs for '", user_input, "':", len(searchresults))
 		for searchresult in searchresults:
 			count += 1 # return top 20 links
