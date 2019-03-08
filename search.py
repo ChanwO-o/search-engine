@@ -1,17 +1,11 @@
-import requests
-import sys
-import os
 import json
-import fileIO
-import bs4
 import re
-import math
-from multiprocessing import Pool
 from collections import defaultdict
-import operator
+import traceback
 
 rootdir = 'webpages\\WEBPAGES_RAW'
 STOPLIST = ['a', 'as', 'the', 'is', 'and', 'it', 'at', 'by', 'that', 'can', 'did', 'do', 'of', 'on', 'for', 'had', 'has', 'will', 'to', 'so']
+
 
 def tokenize(f):
 	#pattern to ensure that word is only alphanumeric
@@ -36,6 +30,40 @@ def tokenize(f):
 		frequencies[i] += 1
 
 	return tokens, frequencies
+	
+	
+def getSearchResults(index, user_input, j_dict):
+	count = 0
+	searchresults = []
+	displayedresults = []
+	try:
+		tokens = user_input.split()
+		if(len(tokens) > 1):
+			num = 0
+			for token in tokens:
+				print(token)
+				if len(token) >= 15:	# filter if token is ridiculously long word
+					continue
+				if token in search.STOPLIST:	# filter if token is a very common word
+					continue
+				if (num == 0):
+					searchresults = search.search(index, token)
+				else:
+					searchresults = list(set(searchresults) | set(search.search(index, token)))
+				num = num + 1
+		else:
+			searchresults = search.search(index, user_input)
+		print("Number of URLs for '", user_input, "':", len(searchresults))
+		for searchresult in searchresults:
+			count += 1 # return top 20 links
+			if count < 21 and searchresult != 'idf': # skip key 'idf' cuz that's a float
+				displayedresults.append(j_dict[searchresult])
+		if len(displayedresults) == 0:
+			displayedresults.append('No results!')
+	except:
+		traceback.print_exc()
+		displayedresults.append("Cannot find word in indexer. Please try again")
+	return displayedresults
 	
 	
 def search(index, searchterm) -> list:
@@ -78,7 +106,7 @@ def create_index() -> (dict, int):
 		fol, fil = k.split('/')
 		
 		try:
-				file = open(rootdir + '\\' + fol + "\\" + fil, 'r', encoding = 'utf-8')
+				file = open(rootdir + '\\' + fol + "\\" + fil, 'r', encoding = 'utf-8') # bs4?
 				tokens , freq_ = tokenize(file)
 				totaldocumentwords += len(tokens)
 		except:

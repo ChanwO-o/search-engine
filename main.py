@@ -1,18 +1,10 @@
-import requests
-import sys
 import os
 import json
 import fileIO
-import bs4
-import re
 import math
-from multiprocessing import Pool
-from collections import defaultdict
-import operator
 import search
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QLineEdit
 from functools import partial
-import traceback
 
 #rootdir = 'webpages'
 rootdir = 'webpages\\WEBPAGES_RAW'
@@ -42,46 +34,13 @@ def gui(index, j_dict):
 	window.setGeometry(500, 500, 1000, 1000)
 	window.show()
 	app.exec_()
-	
 
-def getSearchResults(index, user_input, j_dict):
-	count = 0
-	searchresults = []
-	displayedresults = []
-	try:
-		tokens = user_input.split()
-		if(len(tokens) > 1):
-			num = 0
-			for token in tokens:
-				print(token)
-				if len(token) >= 15:	# filter if token is ridiculously long word
-					continue
-				if token in search.STOPLIST:	# filter if token is a very common word
-					continue
-				if (num == 0):
-					searchresults = search.search(index, token)
-				else:
-					searchresults = list(set(searchresults) | set(search.search(index, token)))
-				num = num + 1
-		else:
-			searchresults = search.search(index, user_input)
-		print("Number of URLs for '", user_input, "':", len(searchresults))
-		for searchresult in searchresults:
-			count += 1 # return top 20 links
-			if count < 21 and searchresult != 'idf': # skip key 'idf' cuz that's a float
-				displayedresults.append(j_dict[searchresult])
-		if len(displayedresults) == 0:
-			displayedresults.append('No results!')
-	except:
-		traceback.print_exc()
-		displayedresults.append("Cannot find word in indexer. Please try again")
-	return displayedresults
 	
 def onClickSearch(index, textbox, j_dict):
 	global searchresults
 	
 	# get search results
-	finalsearchresults = getSearchResults(index, textbox.text(), j_dict) #search.search(index, textbox.text())
+	finalsearchresults = search.getSearchResults(index, textbox.text(), j_dict) #search.search(index, textbox.text())
 	# set searchresults lable as results
 	searchresults.setText(formatFinalResults(finalsearchresults))
 	
