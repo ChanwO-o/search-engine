@@ -12,6 +12,7 @@ import operator
 import search
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QLineEdit
 from functools import partial
+import traceback
 
 #rootdir = 'webpages'
 rootdir = 'webpages\\WEBPAGES_RAW'
@@ -45,29 +46,34 @@ def gui(index, j_dict):
 
 def getSearchResults(index, user_input, j_dict):
 	count = 0
-	searchresult = []
+	searchresults = []
 	displayedresults = []
 	try:
-		usr_sp = user_input.split(' ')
-		if(len(usr_sp) > 1):
+		tokens = user_input.split()
+		if(len(tokens) > 1):
 			num = 0
-			for i in usr_sp:
-				print(i)
+			for token in tokens:
+				print(token)
+				if len(token) >= 15:	# filter if token is ridiculously long word
+					continue
+				if token in search.STOPLIST:	# filter if token is a very common word
+					continue
 				if (num == 0):
-					searchresult = search.search(index, i)
+					searchresults = search.search(index, token)
 				else:
-					searchresult = list(set(searchresult) | set(search.search(index, i)))
+					searchresults = list(set(searchresults) | set(search.search(index, token)))
 				num = num + 1
 		else:
-			searchresult = search.search(index, user_input)
-		print("Number of URLs for '", user_input, "':", len(searchresult))
-		for i in searchresult:
+			searchresults = search.search(index, user_input)
+		print("Number of URLs for '", user_input, "':", len(searchresults))
+		for searchresult in searchresults:
 			count += 1 # return top 20 links
-			if count < 21 and i != 'idf': # skip key 'idf' cuz that's a float
-				displayedresults.append(j_dict[i])
+			if count < 21 and searchresult != 'idf': # skip key 'idf' cuz that's a float
+				displayedresults.append(j_dict[searchresult])
 		if len(displayedresults) == 0:
 			displayedresults.append('No results!')
 	except:
+		traceback.print_exc()
 		displayedresults.append("Cannot find word in indexer. Please try again")
 	return displayedresults
 	

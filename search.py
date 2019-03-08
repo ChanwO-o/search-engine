@@ -9,7 +9,9 @@ import math
 from multiprocessing import Pool
 from collections import defaultdict
 import operator
+
 rootdir = 'webpages\\WEBPAGES_RAW'
+STOPLIST = ['a', 'as', 'the', 'is', 'and', 'it', 'at', 'by', 'that', 'can', 'did', 'do', 'of', 'on', 'for', 'had', 'has', 'will', 'to', 'so']
 
 def tokenize(f):
 	#pattern to ensure that word is only alphanumeric
@@ -37,6 +39,8 @@ def tokenize(f):
 	
 	
 def search(index, searchterm) -> list:
+	if searchterm not in index: # handle no results error
+		return dict()
 	searchresult = index[searchterm]
 	sortresult = dict()
 	#print(searchterm)
